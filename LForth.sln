@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LForth_Console", "LForth_Console\LForth_Console.csproj", "{8DBA9A12-C030-412B-BAAD-EA4A613F41EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Info", "_Info", "{F1BE18EF-1376-4BD2-8FC1-B9EBA38F8403}"
+ProjectSection(SolutionItems) = preProject
+	LICENSE = LICENSE
+	README.md = README.md
+EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8DBA9A12-C030-412B-BAAD-EA4A613F41EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DBA9A12-C030-412B-BAAD-EA4A613F41EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DBA9A12-C030-412B-BAAD-EA4A613F41EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DBA9A12-C030-412B-BAAD-EA4A613F41EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
