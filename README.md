@@ -76,18 +76,27 @@ So we end up switching scope a few times
 `{0} do { pull + } while { more } done`
 `do { "hello, world" printline } repeat { 3 } times`
 
+`call` will run all the instructions on the head pivot, leaving whatever output
+on the value stack as normal
+
 ```
 /do "do-block" setclass
 /while "do-block" dup endclass setclass
         -- closes scope, causing an instruction stack pivot, starts new scope
 /repeat "do-block" dup endclass setclass
-/done "do-block" endclass  [[ something like: dup if 1 idx call ]]
+/done "do-block" endclass
+        ?????
         -- ends the scope. We now have a condition at the
         -- stack head and a code block to call after it
 /times "do-block" endclass [[ something like: dup if 1 idx call ??? ]]
+        do  1 - done -- push the decrement as an action
+        loop[ >0 IF 2 idx call THEN ; ] dup call WHILE
         -- 'condition' is now a counter we can decrement.
         -- Keep calling the code block until it's zero
 ```
+
+I *think* that we can implement pretty much any flow control with just a loop-while
+special word.
 
 ## Tagging stack items
 
@@ -101,3 +110,6 @@ so
 `1 2 3 4 5 6   4 idx`
 results in
 `1 2 3 4 5 6 2`
+
+and
+`1 2 3   1 idx 2 idx + + ` -> `1 2 6`
