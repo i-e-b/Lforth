@@ -62,41 +62,50 @@ pivot is not empty.
 
 ## Word classes
 
-By default, words are *not* executed immediately, but go on an instruction stack.
-Different classes can cause eviction at different points. (I'm not 100% on how
-this will work)
+By default, words are executed immediately. Quoted blocks go on an instruction
+stack, as a single unit. Instruction quotes are started with `[` and end with `]`.
 
-`do ... while ? done`
+The quotes can be nested. (to-do: work out how the stack works with nested quotes).
 
-`do` is a high class word, so anything after it is not executed until we hit an
-equal or higher word? Or do we push/pivot to allow nesting?
+To-do: figure out a minimal setup so we can do a for loop.
 
-So we end up switching scope a few times
-
-`{0} do { pull + } while { more } done`
-`do { "hello, world" printline } repeat { 3 } times`
-
-`call` will run all the instructions on the head pivot, leaving whatever output
-on the value stack as normal
-
+Define a word:
 ```
-/do "do-block" setclass
-/while "do-block" dup endclass setclass
-        -- closes scope, causing an instruction stack pivot, starts new scope
-/repeat "do-block" dup endclass setclass
-/done "do-block" endclass
-        ?????
-        -- ends the scope. We now have a condition at the
-        -- stack head and a code block to call after it
-/times "do-block" endclass [[ something like: dup if 1 idx call ??? ]]
-        do  1 - done -- push the decrement as an action
-        loop[ >0 IF 2 idx call THEN ; ] dup call WHILE
-        -- 'condition' is now a counter we can decrement.
-        -- Keep calling the code block until it's zero
+[ . . . ] "new-word" def
 ```
 
-I *think* that we can implement pretty much any flow control with just a loop-while
-special word.
+Run a code block immediately
+```
+[ run me now ] call
+```
+
+Conditional code:
+```
+[ this code might run ] [ test ] if
+[ maybe this ] [ or this ] [ test ] ifelse
+```
+
+Duplicate or drop code:
+```
+[ this code runs twice ] code-dup call call
+[ I will run ] [ this code won't run ] code-drop call
+```
+
+Exit running block and pop from stack
+```
+[ [ inner code ] call end; [ never runs ] ]
+```
+
+Return to start of current code block (goto like):
+```
+[ ... run this forever ... loop; ]
+```
+(therefore, don't do `[loop;]`)
+
+Duplicate a code-block by index
+```
+[ run this ] [ not this ] 1 code-dup call drop drop
+```
 
 ## Tagging stack items
 
@@ -113,3 +122,21 @@ results in
 
 and
 `1 2 3   1 idx 2 idx + + ` -> `1 2 6`
+
+
+# Scratchpad
+Thoughts and stuff
+
+```
+[ if-case ] [ else-case ] [ test ] ifelse
+
+'#' as a prefix to operate on code stack?
+
+[
+    call  ( run the test - data stack has 0 if false, -1 if true )
+    1 * ( now 1 if true, 0 if false )
+    # idx ( copy the appropriate block )
+    call ( run the code )
+    # drop # drop ( wipe both cases - does not affect data stack )
+] "ifelse" def
+```
